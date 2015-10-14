@@ -1,12 +1,28 @@
 import json
-with open('data/NYSE_PEP.json') as data_file:
-    res = json.load(data_file)
-with open('result.js', 'w') as outfile:
-    outfile.write("var json =")
-    json.dump(res, outfile)
-with open('data/NYSE_KO.json') as data_file:
-    res = json.load(data_file)
-print res["data"]
-with open('result2.js', 'w') as outfile:
-    outfile.write("var json2 =")
-    json.dump(res, outfile)
+import time
+import requests
+import urlparse
+
+
+pattern = '%Y-%m-%d'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
+}
+
+stocksToCrawl = ["KO",'PEP',"BA"]
+URLToFill  = "https://www.quandl.com/api/v3/datasets/GOOG/NYSE_{0}.json?auth_token=hTQ-bA6dx-uV2EKM6X8S&column_index=4&order=asc&start_date=2000-10-13"
+for stock in stocksToCrawl:
+    urlFinal = URLToFill.format(stock)
+    fileToCreate = "data/NYSE_" + stock + ".json"
+    page = requests.get(urlFinal, headers=headers)
+    with open(fileToCreate, 'w') as outfile:
+        outfile.write(page.content)
+        outfile.close()
+    with open(fileToCreate) as data_file:
+        res = json.load(data_file)
+    for i in range (0,len(res["dataset"]["data"])):
+        res["dataset"]["data"][i][0] = int(time.mktime(time.strptime(res["dataset"]["data"][i][0], pattern)))*1000
+    fileResults = "javascript/NYSE_" + stock + ".js"
+    with open(fileResults, 'w') as outfile:
+        outfile.write("var json" + stock +  "=")
+        json.dump(res, outfile)

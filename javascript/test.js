@@ -1,5 +1,3 @@
-var jsonValue = json
-var jsonValue2 = json2
 $(function () {
 
         $('#container').highcharts('StockChart', {
@@ -36,12 +34,16 @@ $(function () {
             },
 
             series: [{
-          name: jsonValue.dataset.name,
-          data: jsonValue.dataset.data
+          name: jsonKO.dataset.name,
+          data: jsonKO.dataset.data
 
       }, {
-        name: jsonValue2.dataset.name,
-        data: jsonValue2.dataset.data
+        name: jsonPEP.dataset.name,
+        data: jsonPEP.dataset.data
+
+      }, {
+        name: jsonBA.dataset.name,
+        data: jsonBA.dataset.data
 
       }]
         });
