@@ -42,8 +42,12 @@ $(function () {
         data: jsonPEP.dataset.data
 
       }, {
-        name: jsonBA.dataset.name,
-        data: jsonBA.dataset.data
+        name: jsonCVX.dataset.name,
+        data: jsonCVX.dataset.data
+
+      }, {
+        name: jsonXOM.dataset.name,
+        data: jsonXOM.dataset.data
 
       }]
         });
