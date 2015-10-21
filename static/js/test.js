@@ -3,12 +3,41 @@ $(function () {
         $('#container').highcharts('StockChart', {
 
             rangeSelector: {
-                selected: 4
+              buttons: [{
+              	type: 'month',
+              	count: 1,
+              	text: '1m'
+              }, {
+              	type: 'month',
+              	count: 6,
+              	text: '6m'
+              }, {
+              	type: 'year',
+              	count: 1,
+              	text: '1y'
+              }, {
+              	type: 'year',
+                count: 2,
+              	text: '2y'
+              }, {
+              	type: 'year',
+              	count: 3,
+              	text: '3y'
+              }, {
+              	type: 'year',
+              	count: 4,
+              	text: '4y'
+              }, {
+              	type: 'all',
+              	text: 'All'
+              }],
+                selected: 2
             },
             xAxis: {
             type: 'datetime'
           },
           legend: {enabled: true},
+
             yAxis: {
                 labels: {
                     formatter: function () {
