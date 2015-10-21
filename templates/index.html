@@ -1,4 +1,4 @@
-$def with (name)
+$def with (form, lol)
 <!doctype html>
 <html>
     <head>
@@ -13,5 +13,11 @@ $def with (name)
     </head>
     <body>
       <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+      <form name="main" method="post" action=".">
+      $if not form.valid: <p class="error">Try again, AmeriCAN:</p>
+      $:form.render()
+      <input type="submit" />    </form>
+
+      $lol
     </body>
 </html>

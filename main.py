@@ -4,14 +4,21 @@ import requests
 import urlparse
 from scipy.stats.stats import pearsonr
 import web
+from web import form
 
 urls = (
-    '/', 'index'
+    '/', 'index',
+    '/generate', 'generate'
 )
 render = web.template.render('templates/')
 template = web.template.render('templates/')
 
 app = web.application(urls, globals())
+
+myform = form.Form(
+    form.Dropdown('Stock1', ['KO', 'PEP', 'CVX', 'XOM']),
+    form.Dropdown('Stock2', ['KO', 'PEP', 'CVX', 'XOM']),
+    form.Textbox('Years'))
 
 def correlation(stock1,stock2,**keyword_parameters):
     if ('optional' in keyword_parameters):
@@ -34,9 +41,9 @@ def correlation(stock1,stock2,**keyword_parameters):
         for i in range (len(res["dataset"]["data"]) - numberOfDays,len(res["dataset"]["data"])):
             data2.append(res["dataset"]["data"][i][1])
         data.close()
-    print "Correlation of the stocks " + stock1 + " and " + stock2 + " for the last " + str(numberOfYears) + " year(s) is : " + str(pearsonr(data1,data2)[0])
+    return "Correlation of the stocks " + stock1 + " and " + stock2 + " for the last " + str(numberOfYears) + " year(s) is : " + str(pearsonr(data1,data2)[0])
 
-class index:
+class generate:
     def GET(self):
         pattern = '%Y-%m-%d'
         headers = {
@@ -55,15 +62,26 @@ class index:
                 res = json.load(data_file)
             for i in range (0,len(res["dataset"]["data"])):
                 res["dataset"]["data"][i][0] = int(time.mktime(time.strptime(res["dataset"]["data"][i][0], pattern)))*1000
-            fileResults = "javascript/" + stock + ".js"
+            fileResults = "static/js/" + stock + ".js"
             with open(fileResults, 'w') as outfile:
                 outfile.write("var json" + stock +  "=")
                 json.dump(res, outfile)
+
+class index:
+    def GET(self):
         correlation("KO","PEP",optional = 1)
         correlation("KO","PEP",optional = 2)
         correlation("KO","PEP",optional = 3)
         correlation("KO","PEP",optional = 4)
-        return render.index("")
+        form = myform()
+        return render.index(form, None)
+
+    def POST(self):
+        form = myform()
+        post_input = web.input(_method='post')
+        numberOfYears = int(post_input.Years) if post_input.Years else 1
+        lol = correlation(post_input.Stock1,post_input.Stock2,optional = numberOfYears)
+        return render.index(form, "dsdsqdq")
 
 if __name__ == "__main__":
     app.run()
